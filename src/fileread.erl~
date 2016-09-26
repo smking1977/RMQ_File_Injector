@@ -1,0 +1,10 @@
+-module(fileread).
+-export([ start/0,
+	make/0]).
+
+
+make() ->
+    make:all([load]).
+
+start() ->
+    application:ensure_all_started(?MODULE).
