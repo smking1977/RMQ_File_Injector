@@ -4,7 +4,8 @@
 	 process/1]).
 
 start() ->
-     io:fwrite("Reading Files\n"),
+
+    fileread_amqp_client:start(sender),
     {ok, Files} = file:list_dir(fileread:get_dir()),
     io:fwrite("Files Count ~w ~n ", [length(Files)]),
     S1 = erlang:system_time(seconds),
@@ -12,13 +13,11 @@ start() ->
     S2 = erlang:system_time(seconds),  
     io:fwrite("Processing time : ~w seconds ~n ", [(S2 - S1)]),
     io:fwrite("Files  ~w ~n ", [length(Files)]),
-    io:fwrite("TPS:  ~w ~n ", [(S2 - S1)/ length(Files)]).
+    io:fwrite("TPS:  ~w ~n ", [length(Files)/ (S2-S1)]).
 
 process(Files) ->
  
-    {Channel, Connection} = fileread_amqp_client:connect(),
-    lists:foreach(fun readData/1, Files),
-    fileread_amqp_client:close(Channel, Connection).
+    lists:foreach(fun readData/1, Files).
 
 
 readData(Filename) ->
@@ -26,8 +25,8 @@ readData(Filename) ->
 
    
 read_files (Filename, false) ->
-    {ok, _F} =file:read_file(fileread:get_dir() ++ Filename);
-   % fileread_amqp_client:send(F);
+    {ok, F} =file:read_file(fileread:get_dir() ++ Filename),
+    fileread_amqp_client:send(sender, F);
 read_files (_,_) ->
     io:fwrite("Directory  ~n ").
 

@@ -1,0 +1,21 @@
+%%-*- mode: erlang -*-
+{application,fileread, [
+                   {description, "Fiel Read thing"},
+                   {vsn, "0.1.0"},
+                   {id, "git"},
+                   {modules, []},
+                   {registered, []},
+                   {applications, [
+                                   kernel,
+                                   stdlib,
+				   amqp_client,
+				   rabbit_common,
+                                   jsx,
+                                   inets
+                                  ]},
+                   {mod, {fileread_app, []}},
+                   {env, [
+
+                          ]}
+
+                  ]}.
